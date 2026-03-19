@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Empleados - LogiTech Solución</title>
+    <style>
+        :root {
+            --md-sys-color-primary: #006874; /* Un tono diferente para diferenciar del admin */
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-surface: #FBFDFD;
+            --md-sys-color-on-surface: #191C1D;
+            --md-sys-color-surface-variant: #DBE4E6;
+            --md-sys-color-outline: #6F797A;
+            --md-sys-color-background: #F4F6F6;
+            --font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* Un poco más estrecho para formato feed de lectura */
+            display: grid;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--md-sys-color-surface-variant);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: var(--md-sys-color-outline);
+            margin-top: 0.5rem;
+        }
+
+        /* Contenedor del Feed */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Estilos de la Tarjeta de Noticia */
+        .news-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        .news-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .news-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.3;
+        }
+
+        .news-date {
+            font-size: 0.75rem;
+            color: var(--md-sys-color-outline);
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .news-content {
+            color: #3F484A;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            white-space: pre-wrap;
+        }
+
+        /* Sección de interacción (Botón comentar) */
+        .news-actions {
+            border-top: 1px solid var(--md-sys-color-surface-variant);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--md-sys-color-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-text:hover {
+            background-color: rgba(0, 104, 116, 0.08);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>LogiTech Solución</h1>
+            <p class="subtitle">Tablero de Anuncios Internos</p>
+        </header>
+
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <button id="logoutBtn" class="btn-primary" style="background: transparent; color: var(--md-sys-color-primary); border: none; padding: 0.4rem 0.8rem; border-radius: 12px; cursor: pointer;">Cerrar Sesión</button>
+        </div>
+
+        <main id="feedContainer" class="feed-container">
+            </main>
+    </div>
+
+    <script>
+        (function() {
+            function parseJwt(token) {
+                try {
+                    const base64Url = token.split('.')[1];
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+                    return JSON.parse(jsonPayload);
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function getValidPayload() {
+                const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+                if (!token) return null;
+                const payload = parseJwt(token);
+                if (!payload) return null;
+                if (payload.exp) {
+                    const now = Math.floor(Date.now() / 1000);
+                    if (payload.exp <= now) return null;
+                }
+                return payload;
+            }
+
+            const payload = getValidPayload();
+            if (!payload) {
+                window.location.href = 'login.html';
+                return;
+            }
+        })();
+
+        // 1. Arreglo "quemado" con las publicaciones
+        const listaAnuncios = [
+            {
+                id: 1,
+                titulo: "Actualización en los flujos de trabajo de Scrum",
+                contenido: "A partir del próximo lunes, ajustaremos los tiempos de nuestras ceremonias diarias (Daily). Por favor, revisen el tablero principal para ver los nuevos horarios asignados por equipo. Es fundamental la puntualidad para no extender la reunión más de 15 minutos.",
+                fecha: "18/03/2026 08:30"
+            },
+            {
+                id: 2,
+                titulo: "Nuevas directrices de gestión de incidentes (ITIL)",
+                contenido: "Como parte de nuestra mejora continua en el servicio, hemos actualizado la matriz de escalamiento de incidentes. Los tickets de prioridad alta ahora requieren una validación cruzada antes de cerrarse. El documento detallado está en la intranet.",
+                fecha: "15/03/2026 14:15"
+            },
+            {
+                id: 3,
+                titulo: "Mantenimiento preventivo de servidores",
+                contenido: "Este fin de semana (Sábado 21 a partir de las 22:00) realizaremos una actualización de seguridad en los servidores de la base de datos principal. Habrá intermitencia en el servicio de VPN durante aproximadamente dos horas.",
+                fecha: "12/03/2026 09:00"
+            }
+        ];
+
+        // 2. Referencia al contenedor en el HTML
+        const feedContainer = document.getElementById('feedContainer');
+
+        // 3. Función para renderizar los anuncios
+        function renderizarAnuncios() {
+            // Limpiar el contenedor por si acaso
+            feedContainer.innerHTML = '';
+
+            // Recorrer el arreglo y crear el HTML para cada anuncio
+            listaAnuncios.forEach(anuncio => {
+                // Crear el elemento contenedor de la tarjeta
+                const card = document.createElement('article');
+                card.classList.add('news-card');
+
+                // Construir la estructura interna
+                card.innerHTML = `
+                    <div class="news-header">
+                        <h2 class="news-title">${anuncio.titulo}</h2>
+                        <span class="news-date">${anuncio.fecha}</span>
+                    </div>
+                    <div class="news-content">${anuncio.contenido}</div>
+                    <div class="news-actions">
+                        <button class="btn-text" onclick="abrirComentarios(${anuncio.id})">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Comentar
+                        </button>
+                    </div>
+                `;
+
+                // Añadir la tarjeta al DOM
+                feedContainer.appendChild(card);
+            });
+        }
+
+        // 4. Función dummy (simulada) para el botón de comentar
+        function abrirComentarios(idAnuncio) {
+            console.log("Abriendo sección de comentarios para el anuncio con ID:", idAnuncio);
+            alert("En el futuro, esto abrirá los comentarios del anuncio #" + idAnuncio);
+            // Aquí iría la lógica para expandir un div con la caja de texto y comentarios anteriores
+        }
+
+        // 5. Ejecutar la función al cargar la página
+        document.addEventListener('DOMContentLoaded', renderizarAnuncios);
+
+        // Logout: borrar token y redirigir a login
+        (function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    sessionStorage.removeItem('token');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>

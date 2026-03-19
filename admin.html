@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador - Publicar Noticia</title>
+    <style>
+        :root {
+            --md-sys-color-primary: #6750A4;
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-surface: #FEF7FF;
+            --md-sys-color-on-surface: #1D1B20;
+            --md-sys-color-surface-variant: #E7E0EC;
+            --md-sys-color-outline: #79747E;
+            --md-sys-color-background: #F4F3F7;
+            --font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: grid;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+        }
+
+        /* Estilos de la Tarjeta (Card) */
+        .card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        /* Estilos del Formulario */
+        .form-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+            color: var(--md-sys-color-on-surface);
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        textarea {
+            padding: 1rem;
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 4px;
+            font-family: var(--font-family);
+            font-size: 1rem;
+            background-color: var(--md-sys-color-surface);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            box-shadow: 0 0 0 2px rgba(103, 80, 164, 0.2);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Botón estilo Material */
+        .btn-primary {
+            background-color: var(--md-sys-color-primary);
+            color: var(--md-sys-color-on-primary);
+            border: none;
+            border-radius: 100px; /* Fully rounded for MD3 */
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #554287;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        /* Feed de publicaciones recientes */
+        .posts-feed {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .post-item {
+            background-color: var(--md-sys-color-surface);
+            border: 1px solid var(--md-sys-color-surface-variant);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .post-item h3 {
+            margin-bottom: 0.5rem;
+            color: var(--md-sys-color-on-surface);
+        }
+
+        .post-item p {
+            color: #49454F;
+            line-height: 1.5;
+            white-space: pre-wrap; /* Mantiene los saltos de línea del textarea */
+        }
+
+        .post-meta {
+            font-size: 0.75rem;
+            color: var(--md-sys-color-outline);
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Portal Corporativo</h1>
+        </header>
+
+        <div style="text-align: right; margin-bottom: 1rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+            <button id="registerEmpBtn" style="background: transparent; color: var(--md-sys-color-primary); border: 1px solid var(--md-sys-color-outline); padding: 0.4rem 0.8rem; border-radius: 12px; cursor: pointer;">Registrar Empleado</button>
+            <button id="logoutBtn" class="btn-primary" style="width: auto; padding: 0.5rem 1rem; border-radius: 12px;">Cerrar Sesión</button>
+        </div>
+
+        <main class="card">
+            <h2 class="card-title">Crear Nuevo Anuncio</h2>
+            <form id="newsForm">
+                <div class="form-group">
+                    <label for="postTitle">Título del anuncio</label>
+                    <input type="text" id="postTitle" placeholder="Ej: Nueva política de trabajo remoto..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postContent">Contenido</label>
+                    <textarea id="postContent" placeholder="Escribe los detalles del anuncio aquí..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    Publicar Anuncio
+                </button>
+            </form>
+        </main>
+
+        <section>
+            <h2 style="font-size: 1.25rem; font-weight: 500; margin-bottom: 1rem; margin-top: 1rem;">Anuncios Publicados Recientemente</h2>
+            <div id="postsContainer" class="posts-feed">
+                <p id="emptyState" style="text-align: center; color: var(--md-sys-color-outline); font-style: italic;">No hay anuncios publicados aún.</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Verificar token de autenticación y rol (redirige a login si falta/expiró/no tiene permisos)
+        (function() {
+            function parseJwt(token) {
+                try {
+                    const base64Url = token.split('.')[1];
+                    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                    }).join(''));
+                    return JSON.parse(jsonPayload);
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function getValidPayload() {
+                const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+                if (!token) return null;
+                const payload = parseJwt(token);
+                if (!payload) return null;
+                if (payload.exp) {
+                    const now = Math.floor(Date.now() / 1000);
+                    if (payload.exp <= now) return null;
+                }
+                return payload;
+            }
+
+            const payload = getValidPayload();
+            if (!payload) {
+                // No token o expirado
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Verificar rol ADMIN (acepta variantes en mayúsculas/minúsculas)
+            const roleRaw = payload.rol || payload.role || payload.Rol || payload.ROL || '';
+            const role = String(roleRaw).toUpperCase();
+            if (!role.includes('ADMIN')) {
+                // Rol no autorizado
+                sessionStorage.removeItem('token');
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+                return;
+            }
+        })();
+
+        // Referencias a los elementos del DOM
+        const form = document.getElementById('newsForm');
+        const titleInput = document.getElementById('postTitle');
+        const contentInput = document.getElementById('postContent');
+        const postsContainer = document.getElementById('postsContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        // Escuchar el evento de envío del formulario
+        form.addEventListener('submit', function(event) {
+            // Prevenir que la página se recargue
+            event.preventDefault();
+
+            // Obtener los valores de los inputs
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (title && content) {
+                // Crear el elemento de la publicación
+                crearPublicacion(title, content);
+                
+                // Limpiar el formulario
+                form.reset();
+                
+                // Ocultar el estado vacío si está visible
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+            }
+        });
+
+        // Función para inyectar el nuevo anuncio en el HTML
+        function crearPublicacion(titulo, contenido) {
+            // Obtener la fecha y hora actual
+            const fechaActual = new Date();
+            const fechaFormateada = fechaActual.toLocaleDateString('es-CO') + ' ' + fechaActual.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+
+            // Crear un contenedor para el nuevo post
+            const postDiv = document.createElement('div');
+            postDiv.classList.add('post-item');
+
+            // Estructura interna del post
+            postDiv.innerHTML = `
+                <h3>${escapeHTML(titulo)}</h3>
+                <p>${escapeHTML(contenido)}</p>
+                <div class="post-meta">
+                    <span>Publicado por: Admin</span>
+                    <span>${fechaFormateada}</span>
+                </div>
+            `;
+
+            // Insertar al principio del contenedor
+            postsContainer.prepend(postDiv);
+        }
+
+        // Función de seguridad básica para prevenir inyección de HTML (XSS)
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // Logout + Registrar empleado
+        (function() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function() {
+                    sessionStorage.removeItem('token');
+                    localStorage.removeItem('token');
+                    window.location.href = 'login.html';
+                });
+            }
+
+            const registerBtn = document.getElementById('registerEmpBtn');
+            if (registerBtn) {
+                registerBtn.addEventListener('click', function() {
+                    window.location.href = 'registro.html';
+                });
+            }
+        })();
+    </script>
+
+</body>
+</html>
