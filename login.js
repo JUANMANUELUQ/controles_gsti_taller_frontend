@@ -17,7 +17,8 @@ const form = document.getElementById('loginForm');
         }
 
         async function sendLoginRequest(nombre, clave) {
-            const url = 'http://localhost:8080/api/public/login';
+            const base = (window.APP_CONFIG && window.APP_CONFIG.API_URL) ? window.APP_CONFIG.API_URL : 'http://localhost:8080';
+            const url = `${base}/api/public/login`;
             const body = {
                 nombre: nombre,
                 clave: clave

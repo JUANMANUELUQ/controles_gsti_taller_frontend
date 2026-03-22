@@ -43,7 +43,8 @@
         }
 
         async function registerUser(nombre, clave) {
-            const url = 'http://localhost:8080/api/public/register';
+            const base = (window.APP_CONFIG && window.APP_CONFIG.API_URL) ? window.APP_CONFIG.API_URL : 'http://localhost:8080';
+            const url = `${base}/api/public/register`;
             const token = sessionStorage.getItem('token') || localStorage.getItem('token');
 
             const body = { nombre: nombre, clave: clave };
