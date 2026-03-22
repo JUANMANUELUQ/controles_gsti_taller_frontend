@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Empleados - LogiTech Solución</title>
+    <style>
+        :root {
+            --md-sys-color-primary: #006874; /* Un tono diferente para diferenciar del admin */
+            --md-sys-color-on-primary: #FFFFFF;
+            --md-sys-color-surface: #FBFDFD;
+            --md-sys-color-on-surface: #191C1D;
+            --md-sys-color-surface-variant: #DBE4E6;
+            --md-sys-color-outline: #6F797A;
+            --md-sys-color-background: #F4F6F6;
+            --font-family: 'Roboto', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--md-sys-color-background);
+            color: var(--md-sys-color-on-surface);
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px; /* Un poco más estrecho para formato feed de lectura */
+            display: grid;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--md-sys-color-surface-variant);
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            color: var(--md-sys-color-primary);
+        }
+
+        .subtitle {
+            font-size: 0.875rem;
+            color: var(--md-sys-color-outline);
+            margin-top: 0.5rem;
+        }
+
+        /* Contenedor del Feed */
+        .feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Estilos de la Tarjeta de Noticia */
+        .news-card {
+            background-color: var(--md-sys-color-surface);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+        .news-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .news-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--md-sys-color-on-surface);
+            line-height: 1.3;
+        }
+
+        .news-date {
+            font-size: 0.75rem;
+            color: var(--md-sys-color-outline);
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+
+        .news-content {
+            color: #3F484A;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            white-space: pre-wrap;
+        }
+
+        /* Sección de interacción (Botón comentar) */
+        .news-actions {
+            border-top: 1px solid var(--md-sys-color-surface-variant);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .btn-text {
+            background: transparent;
+            color: var(--md-sys-color-primary);
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-text:hover {
+            background-color: rgba(0, 104, 116, 0.08);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>LogiTech Solución</h1>
+            <p class="subtitle">Tablero de Anuncios Internos</p>
+        </header>
+
+        <div style="text-align: right; margin-bottom: 1rem;">
+            <button id="logoutBtn" class="btn-primary" style="background: transparent; color: var(--md-sys-color-primary); border: none; padding: 0.4rem 0.8rem; border-radius: 12px; cursor: pointer;">Cerrar Sesión</button>
+        </div>
+
+        <main id="feedContainer" class="feed-container">
+            </main>
+    </div>
+
+    <script src="../empleado.js"></script>
+
+</body>
+</html>
