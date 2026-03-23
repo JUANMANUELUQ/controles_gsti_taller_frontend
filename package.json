@@ -1,0 +1,9 @@
+{
+  "name": "controles-gsti-taller-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build-env": "node build-env.js",
+    "build": "npm run build-env"
+  }
+}

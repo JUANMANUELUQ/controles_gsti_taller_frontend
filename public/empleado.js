@@ -26,7 +26,7 @@
 
             const payload = getValidPayload();
             if (!payload) {
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
                 return;
             }
         })();
@@ -106,7 +106,7 @@
                 logoutBtn.addEventListener('click', function() {
                     sessionStorage.removeItem('token');
                     localStorage.removeItem('token');
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 });
             }
         })();

@@ -1,5 +1,5 @@
 // Verificar token ADMIN antes de permitir acceso a la página
-        (function() {
+(function() {
             function parseJwt(token) {
                 try {
                     const base64Url = token.split('.')[1];
@@ -24,10 +24,10 @@
             }
 
             const payload = getValidPayload();
-            if (!payload) { window.location.href = 'login.html'; return; }
+            if (!payload) { window.location.href = 'index.html'; return; }
             const roleRaw = payload.rol || payload.role || payload.Rol || payload.ROL || '';
             const role = String(roleRaw).toUpperCase();
-            if (!role.includes('ADMIN')) { sessionStorage.removeItem('token'); localStorage.removeItem('token'); window.location.href = 'login.html'; return; }
+            if (!role.includes('ADMIN')) { sessionStorage.removeItem('token'); localStorage.removeItem('token'); window.location.href = 'index.html'; return; }
         })();
 
         const form = document.getElementById('registerForm');
@@ -44,7 +44,7 @@
 
         async function registerUser(nombre, clave) {
             const base = (window.APP_CONFIG && window.APP_CONFIG.API_URL) ? window.APP_CONFIG.API_URL : 'http://localhost:8080';
-            const url = `${base}/api/public/register`;
+            const url = `${base}/api/account/register`;
             const token = sessionStorage.getItem('token') || localStorage.getItem('token');
 
             const body = { nombre: nombre, clave: clave };

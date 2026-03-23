@@ -1,5 +1,5 @@
 // Verificar token de autenticación y rol (redirige a login si falta/expiró/no tiene permisos)
-        (function() {
+(function() {
             function parseJwt(token) {
                 try {
                     const base64Url = token.split('.')[1];
@@ -28,7 +28,7 @@
             const payload = getValidPayload();
             if (!payload) {
                 // No token o expirado
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -39,7 +39,7 @@
                 // Rol no autorizado
                 sessionStorage.removeItem('token');
                 localStorage.removeItem('token');
-                window.location.href = 'login.html';
+                window.location.href = 'index.html';
                 return;
             }
         })();
@@ -112,7 +112,7 @@
                 logoutBtn.addEventListener('click', function() {
                     sessionStorage.removeItem('token');
                     localStorage.removeItem('token');
-                    window.location.href = 'login.html';
+                    window.location.href = 'index.html';
                 });
             }
 

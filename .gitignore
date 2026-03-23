@@ -1,3 +1,6 @@
 node_modules/
 .env
 env.js
+
+# generated env at build
+public/env.js
